@@ -11,7 +11,7 @@ exports.SignUp = async (req, res) => {
     const checking = await userModel.findOne({email:req.body.email});
     if(checking) {
       return res.status(200).json({text1:"Email Already Exist"})
-
+      
     } else {
       const hashPassword = await bcrypt.hash(req.body.password, 10);
       const newData = {
@@ -45,8 +45,8 @@ exports.SignIn = async (req, res) => {
      const user = await userModel.findOne({email:req.body.email});
      if(!user) {
         return res.status(404).json({text2:"user could not found"})
-     }
-     const validationPasswrod = await bcrypt.compare(req.body.password,user.password);
+     } else {
+      const validationPasswrod = await bcrypt.compare(req.body.password,user.password);
     if(!validationPasswrod) {
       return res.status(400).json("Password is Incorrect")  
     }else{
@@ -60,7 +60,9 @@ exports.SignIn = async (req, res) => {
         token:signinToken
        }
        return res.status(200).json({Sign_In_Email_Successed : data})
-    }       
+    }  
+     }
+          
     } catch (error) {
      return res.status(500).json({message:'Server Error'})   
     }
@@ -128,7 +130,7 @@ exports.updateUser = async (req, res) => {
       return res.status(400).json(`can not access`)
     }
   } catch (error) {
-    
+   return res.status(500).json({message:`Server Error ${error}`}) 
   }
 }
 
@@ -159,11 +161,8 @@ exports.forgotPassword = async (req, res) => {
   try {
    const {id} = req.params;
    const {roles} = req.roles;
-   const forgotPassword = await userModel.findOne({_id:id},{set:req.body.password})
-   
- 
+   const forgotPassword = await userModel.findOne({_id:id},{set:req.body.password}) 
   } catch (error) {
     return res.status(500).json({message:`Server error ${error}`})
   }
 }
-
