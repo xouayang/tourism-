@@ -31,6 +31,25 @@ exports.bookingHotel = async (req, res) => {
     }
 }
 
+// get all booking
+exports.getAllDataBooking = async (req, res) => {
+  try {
+    const {roles} = req.roles;
+    if(roles == null) {
+      return res.status(400).json({text:'not found roles'})
+    } else if(roles == 'admin') {
+      const booking = await bookingModle.find({}).select('-__v')
+      if(!booking) {
+        return res.status(400).json(`not found data`)
+      } else {
+        return res.status(200).json(booking)
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({message:`Server Error ${error}`})  
+  }
+}
+
 // get single data booking 
 exports.getSingleDataBooking = async (req, res) => {
   try {
@@ -43,7 +62,7 @@ exports.getSingleDataBooking = async (req, res) => {
      } else {
       return res.status(200).json(booking)
      }
-   } else {
+   }else {
     return res.status(400).json(`can not access`)
    }
   } catch (error) {
@@ -51,19 +70,22 @@ exports.getSingleDataBooking = async (req, res) => {
   }
 }
 
+
+
+
 // delete booking 
 exports.deleteBooking = async (req, res) => {
   try {
     const {roles} = req.roles;
     const {id} = req.params;
-    if(roles == 'user') {
+    if(roles == 'user' || roles == 'admin') {
       const booking = await bookingModle.findByIdAndDelete(id);
       if(!booking) {
         return res.status(400).json({message:"Not found data to delete"})
       }else {
         return res.status(200).json({message:"Successed to delete data"})
       }
-    } else {
+    }else {
       return res.status(400).json(`can access to delete`)
     }
   } catch (error) {
@@ -77,7 +99,7 @@ exports.updateBooking = async (req, res) => {
     const {roles} = req.roles;
     if(roles == null) {
       return res.status(400).json(`not found roles`)
-    } else if(roles == 'user') {
+    } else if(roles == 'admin' || roles == 'user') {
       const booking = await bookingModle.findByIdAndUpdate({_id:id},{$set:req.body})
       if(booking) {
         return res.status(200).json(`Successed to update`)

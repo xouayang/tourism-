@@ -54,6 +54,7 @@ router.post('/booking',bookingController.bookingHotel)
 router.put('/booking:/id', [authenticateToken,getRoles], bookingController.updateBooking)
 router.put('/booking:/id', [authenticateToken,getRoles], bookingController.deleteBooking)
 router.get('/booking/:id',[authenticateToken,getRoles],bookingController.getSingleDataBooking)
+router.get('/booking',[authenticateToken, getRoles], bookingController.getAllDataBooking)
 // status router and testing
 router.post('/status', statusController.createStatus)
 router.get('/status',[authenticateToken, getRoles], statusController.getSingleStatus)
