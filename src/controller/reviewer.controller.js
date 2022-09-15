@@ -19,11 +19,16 @@ exports.createReviewer = async (req, res) => {
 // get reviewer
 exports.getReviewer = async (req, res) => {
   try {
-    const reviewer = await reviewModel.find({}).select("-__v");
-    if (!reviewer) {
-      return res.status(400).json({ text: "not found data" });
-    } else {
-      return res.status(200).json(reviewer);
+    const { roles } = req.roles;
+    if (roles == null) {
+      return res.status(400).json(`not found roles`);
+    } else if (roles == "reviewer" || roles == "admin") {
+      const reviewer = await reviewModel.find({}).select("-__v");
+      if (!reviewer) {
+        return res.status(400).json({ text: "not found data" });
+      } else {
+        return res.status(200).json(reviewer);
+      }
     }
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
@@ -34,14 +39,19 @@ exports.getReviewer = async (req, res) => {
 exports.getSingleReviewer = async (req, res) => {
   try {
     const { id } = req.params;
-    const reviewer = await reviewModel.findById(id).select("-__v");
-    if (!reviewer) {
-      return res.status(400).json(`Not found data`);
-    } else {
-      return res.status(200).json(reviewer);
+    const { roles } = req.roles;
+    if (roles == null) {
+      return res.status(400).json(`not found roles`);
+    } else if (roles == "reviewer" || roles == "admin") {
+      const reviewer = await reviewModel.findById(id).select("-__v");
+      if (!reviewer) {
+        return res.status(400).json(`Not found data`);
+      } else {
+        return res.status(200).json(reviewer);
+      }
     }
   } catch (error) {
-    return res.status(500).json({ message: `Server Error ${error}` });
+    return res.status(500).json(`Server error ${error}`);
   }
 };
 
@@ -52,7 +62,7 @@ exports.updateReviewer = async (req, res) => {
     const { roles } = req.roles;
     if (roles == null) {
       return res.status(400).json(`Can not found roles`);
-    } else if (roles == "reviewer") {
+    } else if (roles == "reviewer" || roles == "admin") {
       const reviewer = await reviewModel.findByIdAndUpdate(
         { _id: id },
         { $set: req.body }
@@ -77,7 +87,7 @@ exports.deleteReviewer = async (req, res) => {
     const { roles } = req.roles;
     if (roles == null) {
       return res.status(400).json(`Not found roles`);
-    } else if (roles == "reviewer") {
+    } else if (roles == "reviewer" || roles == "admin") {
       const reviewer = await reviewModel.findByIdAndDelete(id);
       if (!reviewer) {
         return res.status(400).json(`Not found data to delete`);
@@ -91,3 +101,25 @@ exports.deleteReviewer = async (req, res) => {
     return res.status(500).json({ message: `Serve Error ${error}` });
   }
 };
+
+// admin confirm reviewer 
+exports.comfirmReviewer = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {roles} = req.roles;
+    if(roles == null){
+      return res.status(400).json(`not found roles`)
+    } else if(roles == 'admin') {
+      const reviewer = await reviewModel.findByIdAndUpdate({_id:id},{$set:req.body.status})
+      if(!reviewer) {
+        return res.status(400).json(`not found `)
+      } else {
+        return res.status(200).json(`successed`)
+      }
+    } else {
+      return res.status(400).json(`Can not access`)
+    }
+  } catch (error) {
+   return res.status(500).json({message:`Server Error ${error}`}) 
+  }
+}

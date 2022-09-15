@@ -22,6 +22,10 @@ const reviewerSchema = new mongoose.Schema({
         ref:'account_card.model',
         required:true
     },
+    status:{
+      type:Boolean,
+      default:false
+    },
     is_active:{
         type:Boolean,
         default:true,

@@ -30,8 +30,10 @@ router.put('/news/:id',[authenticateToken, getRoles], newsController.updateNews)
 router.delete('/news/:id',[authenticateToken,getRoles], newsController.deleteNews)
 // hotel router and testing
 router.post('/hotel',hotelController.createHotel)
-router.get('/hotel',hotelController.getDataHotel)
+router.get('/hotel',[authenticateToken,getRoles],hotelController.getDataHotel)
 router.get('/hotel/:id',hotelController.getSingleData)
+router.put('/hotel/:id', [authenticateToken,getRoles], hotelController.updateHotel)
+router.put('/hotel/:id',[authenticateToken,getRoles], hotelController.updateStatusHotel)
 // room router and testing
 router.post('/room',[authenticateToken,getRoles], roomController.createRoom)
 router.get('/room',roomController.getAllRoom);
@@ -70,7 +72,7 @@ router.get('/reviewer',reviewerController.getReviewer)
 router.get('/reviewer/:id', reviewerController.getSingleReviewer)
 router.put('/reviewer/:id',[authenticateToken,getRoles],reviewerController.updateReviewer)
 router.delete('/reviewer/:id',[authenticateToken,getRoles],reviewerController.deleteReviewer)
-
+router.put('/reviewer/:id', [authenticateToken,getRoles], reviewerController.comfirmReviewer)
 // account_card and testing 
 router.post('/account',[authenticateToken, getRoles],accountcardController.createAccount)
 router.get('/account',[authenticateToken,getRoles], accountcardController.getAllAccount)

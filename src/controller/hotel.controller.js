@@ -19,6 +19,7 @@ exports.createHotel = async (req, res) => {
     };
     return res.status(201).json(response);
   } catch (error) {
+    console.log({message:error.message})
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -28,7 +29,7 @@ exports.getDataHotel = async (req, res) => {
     const {roles} = req.roles;
     if(roles == null) {
       return res.status(400).json(`not found roles`)
-    } else if(roles == hotel) {
+    } else if(roles == hotel || roles == 'admin') {
       const hotel = await hotelModel
       .find({})
       .populate({
@@ -58,7 +59,7 @@ exports.getSingleData = async (req, res) => {
     const {roles} = req.roles;
     if(roles == null) {
       return res.status(400).json(`not found roles`)
-    } else if(roles == 'hotel' ){
+    } else if(roles == 'hotel' || roles == 'admin' ){
       const hotel = await hotelModel.findById(id);
       if(!hotel) {
         return res.status(400).json(`not found data`)
@@ -82,7 +83,7 @@ exports.updateHotel = async (req, res) => {
     const { roles } = req.roles;
     if (roles == null) {
       return res.status(400).json("not found roles");
-    } else if (roles == "hotel") {
+    } else if (roles == "hotel" || roles == 'admin') {
       const hotel = await hotelModel.findByIdAndUpdate(
         { _id: id },
         { $set: req.body }
@@ -108,7 +109,7 @@ exports.deleteHotel = async (req, res) => {
     const { roles } = req.roles;
     if (roles == null) {
       return res.status(400).json({ message: "Can not found roles" });
-    } else if (roles == "hotel") {
+    } else if (roles == "hotel" || roles == 'admin') {
       const hotel = await hotelModel.findByIdAndDelete(id);
       if (!hotel) {
         return res.status(400).json({ message: "not found data" });
@@ -122,21 +123,22 @@ exports.deleteHotel = async (req, res) => {
 };
 
 // update status 
-exports.updateStatus = async (req , res) => {
+exports.updateStatusHotel = async (req , res) => {
   try {
     const {id} = req.params;
     const {roles} = req.roles;
     if(roles == null) {
-      return res.status(400).json(`Not found roles`)
-    } else if(roles == 'hotel'){
-      
-    } else if(roles == 'reviewer') {
-    
-    } else if(roles == 'user') {
-    
+      return res.status(400).json(`not found roles`)
+    } else if(roles == 'admin') {
+      const hotel = await hotelModel.findByIdAndUpdate({_id:id}, {$set:req.body.status})
+      if(!hotel) {
+        return res.status(400).json(`not found data to update`)
+      } else {
+        return res.status(200).json(`Successed to update`)
+      }
     } else {
-      return res.status(400).json(`Can not access`)
-    }
+      return res.status(400).json(`Can not access data`)
+    } 
   } catch (error) {
     return res.status(500).json({message:`Server Error ${error}`}) 
   }
