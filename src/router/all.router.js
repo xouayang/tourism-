@@ -80,12 +80,10 @@ router.get('/account:/id', [authenticateToken,getRoles], accountcardController.g
 router.put('/account/:id',[authenticateToken,getRoles], accountcardController.updateAccount)
 router.delete('/account/:id',[authenticateToken,getRoles],accountcardController.deleteAccount )
 
-
 // content router and testing
 router.post('/content',[authenticateToken,getRoles],contentController.createContent)
 router.get('/content', contentController.getContent)
 router.get('/content/:id',[authenticateToken,getRoles],contentController.getSingleContent)
 router.put('/content/:id',[authenticateToken,getRoles],contentController.updateContent)
 router.delete('/content/:id',[authenticateToken,getRoles],contentController.deleteContent)
-
 module.exports = router
