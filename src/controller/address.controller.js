@@ -31,6 +31,20 @@ exports.createAddress = async (req, res) => {
   }
 };
 
+// get all address 
+exports.getAllAdress = async (req,res) => {
+  try {
+    const address = await addressModel.find({}).select('-__v')
+    if(!address) {
+      return res.status(400).json(`not found data`)
+    } else {
+      return res.status(200).json(address)
+    }
+  } catch (error) {
+   return res.status(500).json(`Server error`)
+  }
+}
+
 // get singel address
 exports.getSingleAddress = async (req, res) => {
   try {

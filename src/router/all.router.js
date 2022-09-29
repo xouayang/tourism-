@@ -68,7 +68,7 @@ router.get('/invoice',[authenticateToken, getRoles], invoiceController.getInvoic
 router.get('/invoice/:id',[authenticateToken,getRoles], invoiceController.getSingleInvoice)
 // reviewer router and testing 
 router.post('/reviewer',reviewerController.createReviewer)
-router.get('/reviewer',reviewerController.getReviewer)
+router.get('/reviewer',[getRoles],reviewerController.getReviewer)
 router.get('/reviewer/:id', reviewerController.getSingleReviewer)
 router.put('/reviewer/:id',[authenticateToken,getRoles],reviewerController.updateReviewer)
 router.delete('/reviewer/:id',[authenticateToken,getRoles],reviewerController.deleteReviewer)

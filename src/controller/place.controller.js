@@ -24,8 +24,7 @@ exports.createPlace = async (req, res) => {
         return res.status(400).json(`the roles is invailid`)
        } else {
         return res.status(400).json(`can not access `)
-       }
-        
+       }       
     } catch (error) {
      return res.status(500).json({message:"Server Error"})    
     }
